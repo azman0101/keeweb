@@ -13,8 +13,8 @@
 # Or, to generate self-signed cert, run:
 # docker run --name keeweb -d -p 443:443 -p 80:80 -e 'DH_SIZE=512' antelle/keeweb
 
-FROM nginx:stable
-MAINTAINER Antelle "antelle.net@gmail.com"
+FROM armhfbuild/nginx
+MAINTAINER Azman0101 "azman0101@gmail.com"
 
 # install
 RUN apt-get -y update && apt-get -y install openssl wget unzip
