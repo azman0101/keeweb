@@ -17,8 +17,15 @@ FROM armhfbuild/nginx
 LABEL architecture="ARMv7"
 MAINTAINER Azman0101 "azman0101@gmail.com"
 
+ENV QEMU_EXECVE 1
+
+COPY qemu/resin-xbuild qemu/qemu-arm-static /usr/bin/
+
+RUN [ "qemu-arm-static", "/bin/sh", "-c", "ln -s resin-xbuild /usr/bin/cross-build-start; ln -s resin-xbuild /usr/bin/cross-build-end; mv /bin/sh /bin/sh.real; ln -s /bin/sh.real /bin/sh" ]
+
+RUN [ "cross-build-start" ]
 # install
-RUN apt-get -y update && apt-get -y install openssl wget unzip
+RUN apt-get -y update && apt-get -y install openssl wget unzip && rm -rf /var/lib/apt/lists/*
 
 # setup nginx
 RUN rm -rf /etc/nginx/conf.d/*; \
@@ -48,7 +55,11 @@ RUN wget https://github.com/keeweb/keeweb-plugins/archive/master.zip; \
     rm -rf keeweb-plugins-master \
     rm keeweb/plugins/CNAME
 
-ENTRYPOINT ["/opt/entrypoint.sh"]
+RUN [ "cross-build-end" ] 
+
+ENTRYPOINT [ "/usr/bin/qemu-arm-static", "/usr/bin/env", "QEMU_EXECVE=1" ]
+
+#ENTRYPOINT ["/opt/entrypoint.sh"]
 CMD ["nginx"]
 
 EXPOSE 443
