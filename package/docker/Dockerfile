@@ -14,6 +14,7 @@
 # docker run --name keeweb -d -p 443:443 -p 80:80 -e 'DH_SIZE=512' antelle/keeweb
 
 FROM armhfbuild/nginx
+LABEL architecture="ARMv7"
 MAINTAINER Azman0101 "azman0101@gmail.com"
 
 # install
